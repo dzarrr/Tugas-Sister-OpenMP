@@ -37,7 +37,7 @@ Jumlah *thread* yang digunakan adalah dua. Kami menyesuaikan jumlah *thread* den
 ### Pengukuran Kinerja untuk Tiap Kasus Uji
 Berikut adalah hasil uji pengukuran kinerja dengan menggunakan *bitonic sort* :
 | N | Waktu Paralel | Waktu Serial |
-| ------ | ------ | ------ |   
+| ------ | ------ | ------ |
 | 5000 (1) | 0.002249 | 0.002640 |
 | 5000 (2) | 0.002645 | 0.002852 |  
 | 5000 (3) | 0.002903 | 0.002496 |   

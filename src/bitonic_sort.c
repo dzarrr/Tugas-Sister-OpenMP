@@ -1,32 +1,3 @@
-/*
- bitonic.c 
-
- This file contains two different implementations of the bitonic sort
-        recursive  version 
-        imperative version :  impBitonicSort() 
- 
-
- The bitonic sort is also known as Batcher Sort. 
- For a reference of the algorithm, see the article titled 
- Sorting networks and their applications by K. E. Batcher in 1968 
-
-
- The following codes take references to the codes avaiable at 
-
- http://www.cag.lcs.mit.edu/streamit/results/bitonic/code/c/bitonic.c
-
- http://www.tools-of-computing.com/tc/CS/Sorts/bitonic_sort.htm
-
- http://www.iti.fh-flensburg.de/lang/algorithmen/sortieren/bitonic/bitonicen.htm 
- */
-
-/* 
-------- ---------------------- 
-   Nikos Pitsianis, Duke CS 
------------------------------
-*/
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
@@ -52,14 +23,14 @@ void compare(int i, int j, int dir);
 void bitonicMerge(int lo, int cnt, int dir);
 void recBitonicSort(int lo, int cnt, int dir);
 void impBitonicSort(int paddedN);
-void impBitonicSortParallel(int numberOfThread, int paddedN);
+void impBitonicSortParallel(int paddedN);
 void rng(int* arr, int n);
 int getPaddedN(int N);
 int findMax(int* arr, int N);
-/** the main program **/ 
+
 int main(int argc, char **argv) {
 
-  if (argc != 3) {
+  if (argc != 2) {
     printf("Usage: %s n\n  where n is problem size (power of two)\n", argv[0]);
     exit(1);
   }
@@ -68,7 +39,6 @@ int main(int argc, char **argv) {
 
   int paddedN = getPaddedN(N);
 
-  int numberOfThread = atoi(argv[2]);
   a = (int *) malloc(paddedN * sizeof(int));
 
   rng(a, N);
@@ -89,7 +59,7 @@ int main(int argc, char **argv) {
 
   //Paralel Sort
   gettimeofday (&startwtime, NULL);
-  impBitonicSortParallel(numberOfThread, paddedN);
+  impBitonicSortParallel(paddedN);
   gettimeofday (&endwtime, NULL);
 
   //Output file output.txt
@@ -237,13 +207,13 @@ void sort() {
 /*
   imperative version of bitonic sort
 */
-void impBitonicSortParallel(int numberOfThread, int paddedN) {
+void impBitonicSortParallel(int paddedN) {
 
   int i,j,k;
   
   for (k=2; k<=paddedN; k=2*k) {
     for (j=k>>1; j>0; j=j>>1) {
-      #pragma omp parallel for num_threads(numberOfThread)
+      #pragma omp parallel for num_threads(4)
       for (i=0; i<paddedN; i++) {
 	int ij=i^j;
 	if ((ij)>i) {

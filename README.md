@@ -1,5 +1,7 @@
 # Praktikum 1 - IF3230 - Bitonic Sort
 Tugas OpenMP - Bitonic Sort. Praktikum1_K01_13515007_13515037
+Dzar Bela Hanifa - 13515007
+Muhamad Irfan Maulana - 13515037
 
 ### Petunjuk Penggunaan Program
 

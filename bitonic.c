@@ -51,10 +51,11 @@ inline void exchange(int i, int j);
 void compare(int i, int j, int dir);
 void bitonicMerge(int lo, int cnt, int dir);
 void recBitonicSort(int lo, int cnt, int dir);
-void impBitonicSort(void);
-void impBitonicSortParallel(int numberOfThread);
+void impBitonicSort(int paddedN);
+void impBitonicSortParallel(int numberOfThread, int paddedN);
 void rng(int* arr, int n);
-
+int getPaddedN(int N);
+int findMax(int* arr, int N);
 /** the main program **/ 
 int main(int argc, char **argv) {
 
@@ -64,9 +65,12 @@ int main(int argc, char **argv) {
   }
 
   N = atoi(argv[1]);
+
+  int paddedN = getPaddedN(N);
+
   int numberOfThread = atoi(argv[2]);
-  a = (int *) malloc(N * sizeof(int));
-  
+  a = (int *) malloc(paddedN * sizeof(int));
+
   rng(a, N);
 
   //Output file input.txt
@@ -77,9 +81,15 @@ int main(int argc, char **argv) {
   }
   fclose(finput);
 
+  //Nambah data
+  int maxNum = findMax(a, N);
+  for (int i = N; i < paddedN; i++){
+    a[i] = maxNum;
+  }
+
   //Paralel Sort
   gettimeofday (&startwtime, NULL);
-  impBitonicSortParallel(numberOfThread);
+  impBitonicSortParallel(numberOfThread, paddedN);
   gettimeofday (&endwtime, NULL);
 
   //Output file output.txt
@@ -98,7 +108,7 @@ int main(int argc, char **argv) {
 
   rng(a, N);
   gettimeofday (&startwtime, NULL);
-  impBitonicSort();
+  impBitonicSort(paddedN);
   gettimeofday (&endwtime, NULL);
 
   seq_time = (double)((endwtime.tv_usec - startwtime.tv_usec)/1.0e6
@@ -159,7 +169,13 @@ inline void exchange(int i, int j) {
   a[j] = t;
 }
 
-
+int getPaddedN(int N){
+  int duaPangkat = 1;
+  while (duaPangkat < N) {
+    duaPangkat *= 2;
+  }
+  return duaPangkat;
+}
 
 /** procedure compare() 
    The parameter dir indicates the sorting direction, ASCENDING 
@@ -221,14 +237,14 @@ void sort() {
 /*
   imperative version of bitonic sort
 */
-void impBitonicSortParallel(int numberOfThread) {
+void impBitonicSortParallel(int numberOfThread, int paddedN) {
 
   int i,j,k;
   
-  for (k=2; k<=N; k=2*k) {
+  for (k=2; k<=paddedN; k=2*k) {
     for (j=k>>1; j>0; j=j>>1) {
       #pragma omp parallel for num_threads(numberOfThread)
-      for (i=0; i<N; i++) {
+      for (i=0; i<paddedN; i++) {
 	int ij=i^j;
 	if ((ij)>i) {
 	  if ((i&k)==0 && a[i] > a[ij]) 
@@ -242,13 +258,13 @@ void impBitonicSortParallel(int numberOfThread) {
 }
 
 
-void impBitonicSort() {
+void impBitonicSort(int paddedN) {
 
   int i,j,k;
   
-  for (k=2; k<=N; k=2*k) {
+  for (k=2; k<=paddedN; k=2*k) {
     for (j=k>>1; j>0; j=j>>1) {
-      for (i=0; i<N; i++) {
+      for (i=0; i<paddedN; i++) {
   int ij=i^j;
   if ((ij)>i) {
     if ((i&k)==0 && a[i] > a[ij]) 
@@ -259,4 +275,15 @@ void impBitonicSort() {
       }
     }
   }
+}
+
+
+int findMax(int* arr, int N){
+  int max = arr[0];
+  for (int i = 0; i < N; i++){
+    if (arr[i] > max){
+      max = arr[i]; 
+    }
+  }
+  return max;
 }

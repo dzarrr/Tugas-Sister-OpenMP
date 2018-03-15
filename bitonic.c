@@ -68,9 +68,27 @@ int main(int argc, char **argv) {
   a = (int *) malloc(N * sizeof(int));
   
   rng(a, N);
+
+  //Output file input.txt
+  FILE *finput ;
+  finput = fopen("output/input.txt", "w");
+  for(int i=0; i<N; i++) {
+    fprintf(finput,"%d\n",a[i]);
+  }
+  fclose(finput);
+
+  //Paralel Sort
   gettimeofday (&startwtime, NULL);
   impBitonicSortParallel(numberOfThread);
   gettimeofday (&endwtime, NULL);
+
+  //Output file output.txt
+  FILE *foutput ;
+  foutput = fopen("output/output.txt", "w");
+  for(int i=0; i<N; i++) {
+    fprintf(foutput,"%d\n",a[i]);
+  }
+  fclose(foutput);
 
   seq_time = (double)((endwtime.tv_usec - startwtime.tv_usec)/1.0e6
 		      + endwtime.tv_sec - startwtime.tv_sec);
